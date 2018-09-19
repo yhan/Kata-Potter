@@ -1,8 +1,5 @@
 ﻿namespace PotterKata
 {
-    using System.Collections.Generic;
-    using System.Linq;
-
     using NFluent;
 
     using NUnit.Framework;
@@ -15,27 +12,63 @@
             var shoppingBasket = new ShoppingBasket();
             shoppingBasket.Add(1, 2);
             var price = shoppingBasket.Price();
-            Check.That(price).IsEqualTo(16);
+            Check.That(price).IsEqualTo(8 * 2);
         }
 
         [Test]
-        public void Return_16_when_buy_2_different_book()
+        public void Return_16_with_discount_when_buy_2_different_book()
         {
             var shoppingBasket = new ShoppingBasket();
             shoppingBasket.Add(1, numberOfCopies: 1);
             shoppingBasket.Add(2, numberOfCopies: 1);
             var price = shoppingBasket.Price();
-            Check.That(price).IsEqualTo(16 * 0.95);
+            Check.That(price).IsEqualTo(8 * 2 * 0.95);
         }
 
         [Test]
-        public void Return_16_when_buy_2_same_book_and_a_different_book()
+        public void Return_price_when_buy_2_identical_books_and_a_different_book()
         {
             var shoppingBasket = new ShoppingBasket();
             shoppingBasket.Add(1, numberOfCopies: 1);
             shoppingBasket.Add(2, numberOfCopies: 2);
             var price = shoppingBasket.Price();
-            Check.That(price).IsEqualTo(16 * 0.95 + 8);
+            Check.That(price).IsEqualTo(8 * 2 * 0.95 + 8);
+        }
+
+        [Test]
+        public void Return_price_when_buy_3_book1_and_1_book2_and_1_book3()
+        {
+            var shoppingBasket = new ShoppingBasket();
+            shoppingBasket.Add(1, numberOfCopies: 3);
+            shoppingBasket.Add(2, numberOfCopies: 1);
+            shoppingBasket.Add(3, numberOfCopies: 1);
+            var price = shoppingBasket.Price();
+            Check.That(price).IsEqualTo(8 * 3 * 0.9 + 8 * 2);
+        }
+
+        [Test]
+        public void Return_price_when_buy_3_book1_and_1_book2_and_1_book3_and_1_book4()
+        {
+            var shoppingBasket = new ShoppingBasket();
+            shoppingBasket.Add(1, numberOfCopies: 3);
+            shoppingBasket.Add(2, numberOfCopies: 1);
+            shoppingBasket.Add(3, numberOfCopies: 1);
+            shoppingBasket.Add(4, numberOfCopies: 1);
+            var price = shoppingBasket.Price();
+            Check.That(price).IsEqualTo(8 * 4 * 0.8 + 8 * 2);
+        }
+
+        [Test]
+        public void Return_price_when_buy_3_book1_and_1_book2_and_1_book3_and_1_book4_and_1_book5()
+        {
+            var shoppingBasket = new ShoppingBasket();
+            shoppingBasket.Add(1, numberOfCopies: 3);
+            shoppingBasket.Add(2, numberOfCopies: 1);
+            shoppingBasket.Add(3, numberOfCopies: 1);
+            shoppingBasket.Add(4, numberOfCopies: 1);
+            shoppingBasket.Add(5, numberOfCopies: 1);
+            var price = shoppingBasket.Price();
+            Check.That(price).IsEqualTo(8 * 5 * 0.75 + 8 * 2);
         }
 
         [Test]
@@ -45,32 +78,6 @@
             shoppingBasket.Add(1, 1);
             var price = shoppingBasket.Price();
             Check.That(price).IsEqualTo(8);
-        }
-    }
-
-    internal class ShoppingBasket
-    {
-        private readonly Dictionary<int, int> _books = new Dictionary<int, int>();
-
-        public void Add(int bookId, int numberOfCopies)
-        {
-            _books.Add(bookId, numberOfCopies);
-        }
-
-        public double Price()
-        {
-            double discount = 1;
-            double price = 0;
-            var numberOfBooks = this._books.Values.Sum();
-            if (this._books.Count > 1)
-            {
-                discount = 0.95;
-                price = this._books.Count * discount * 8;
-
-                numberOfBooks -= this._books.Count;
-            }
-
-            return price + numberOfBooks * 8;
         }
     }
 }
