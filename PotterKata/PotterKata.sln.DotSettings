@@ -1,0 +1,12 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=40DF1F5C917F31499D053D09AF63F0A0/AbsolutePath/@EntryValue">C:\git\Kata-Potter\PotterKata\BankOcr.sln.DotSettings</s:String>
+	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=40DF1F5C917F31499D053D09AF63F0A0/RelativePath/@EntryValue">..\BankOcr.sln.DotSettings</s:String>
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=40DF1F5C917F31499D053D09AF63F0A0/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=6D72DA13A9494840B55D124FBAA70542/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=6D72DA13A9494840B55D124FBAA70542/AbsolutePath/@EntryValue">C:\git\Kata-Potter\PotterKata\CaraibesTeam.sln.DotSettings</s:String>
+	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=6D72DA13A9494840B55D124FBAA70542/RelativePath/@EntryValue">..\CaraibesTeam.sln.DotSettings</s:String>
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File40DF1F5C917F31499D053D09AF63F0A0/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File40DF1F5C917F31499D053D09AF63F0A0/IsOn/@EntryValue">False</s:Boolean>
+	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File40DF1F5C917F31499D053D09AF63F0A0/RelativePriority/@EntryValue">1</s:Double>
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File6D72DA13A9494840B55D124FBAA70542/@KeyIndexDefined">True</s:Boolean>
+	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File6D72DA13A9494840B55D124FBAA70542/RelativePriority/@EntryValue">2</s:Double></wpf:ResourceDictionary>
