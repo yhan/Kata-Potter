@@ -39,6 +39,65 @@
         }
 
         [Test]
+        public void Return_21_6_when_buy_3_different_book()
+        {
+            var shoppingBasket = new ShoppingBasket();
+            shoppingBasket.Add(1, numberOfCopies: 1);
+            shoppingBasket.Add(2, numberOfCopies: 1);
+            shoppingBasket.Add(3, numberOfCopies: 1);
+            var price = shoppingBasket.Price();
+            Check.That(price).IsEqualTo(24 * 0.90);
+        }
+
+        [Test]
+        public void Return_25_6_when_buy_4_different_book()
+        {
+            var shoppingBasket = new ShoppingBasket();
+            shoppingBasket.Add(1, numberOfCopies: 1);
+            shoppingBasket.Add(2, numberOfCopies: 1);
+            shoppingBasket.Add(3, numberOfCopies: 1);
+            shoppingBasket.Add(4, numberOfCopies: 1);
+            var price = shoppingBasket.Price();
+            Check.That(price).IsEqualTo(8 * 4 * 0.80);
+        }
+
+        [Test]
+        public void Return_30_4_when_buy_2_book_1_and_2_book_2()
+        {
+            var shoppingBasket = new ShoppingBasket();
+            shoppingBasket.Add(1, numberOfCopies: 2);
+            shoppingBasket.Add(2, numberOfCopies: 2);
+            var price = shoppingBasket.Price();
+            Check.That(price).IsEqualTo(8 * 4 * 0.95);
+        }
+
+        [Test]
+        public void Return_30_when_buy_5_different_book()
+        {
+            var shoppingBasket = new ShoppingBasket();
+            shoppingBasket.Add(1, numberOfCopies: 1);
+            shoppingBasket.Add(2, numberOfCopies: 1);
+            shoppingBasket.Add(3, numberOfCopies: 1);
+            shoppingBasket.Add(4, numberOfCopies: 1);
+            shoppingBasket.Add(5, numberOfCopies: 1);
+            var price = shoppingBasket.Price();
+            Check.That(price).IsEqualTo(8 * 5 * 0.75);
+        }
+
+        //[Test]
+        //public void Return_30_when_buy_52_different_book()
+        //{
+        //    var shoppingBasket = new ShoppingBasket();
+        //    shoppingBasket.Add(1, numberOfCopies: 2);
+        //    shoppingBasket.Add(2, numberOfCopies: 2);
+        //    shoppingBasket.Add(3, numberOfCopies: 2);
+        //    shoppingBasket.Add(4, numberOfCopies: 1);
+        //    shoppingBasket.Add(5, numberOfCopies: 1);
+        //    var price = shoppingBasket.Price();
+        //    Check.That(price).IsEqualTo(51.20);
+        //}
+
+        [Test]
         public void Return_8_when_buy_a_book()
         {
             var shoppingBasket = new ShoppingBasket();
@@ -51,6 +110,14 @@
     internal class ShoppingBasket
     {
         private readonly Dictionary<int, int> _books = new Dictionary<int, int>();
+        private readonly Dictionary<int, double> _discounts = new Dictionary<int, double>
+        {
+            [1] = 1,
+            [2] = 0.95,
+            [3] = 0.90,
+            [4] = 0.80,
+            [5] = 0.75
+        };
 
         public void Add(int bookId, int numberOfCopies)
         {
@@ -59,18 +126,26 @@
 
         public double Price()
         {
-            double discount = 1;
             double price = 0;
-            var numberOfBooks = this._books.Values.Sum();
-            if (this._books.Count > 1)
+            int index = 0;
+            int numberOfSerieAlreadyPrice = 0;
+            foreach (var keyValuePair in _books.OrderBy(x => x.Value))
             {
-                discount = 0.95;
-                price = this._books.Count * discount * 8;
-
-                numberOfBooks -= this._books.Count;
+                var numberDiferentOfBook = _books.Count - index;
+                var numberOfSerie = keyValuePair.Value - numberOfSerieAlreadyPrice;
+                if (numberOfSerie > 0)
+                {
+                    price += numberOfSerie * numberDiferentOfBook * GetDiscount(numberDiferentOfBook) * 8;
+                    numberOfSerieAlreadyPrice = keyValuePair.Value;
+                }
+                index++;
             }
+            return price;
+        }
 
-            return price + numberOfBooks * 8;
+        private double GetDiscount(int numberDiferentOfBook)
+        {
+            return _discounts[numberDiferentOfBook];
         }
     }
 }
