@@ -84,18 +84,18 @@
             Check.That(price).IsEqualTo(8 * 5 * 0.75);
         }
 
-        //[Test]
-        //public void Return_30_when_buy_52_different_book()
-        //{
-        //    var shoppingBasket = new ShoppingBasket();
-        //    shoppingBasket.Add(1, numberOfCopies: 2);
-        //    shoppingBasket.Add(2, numberOfCopies: 2);
-        //    shoppingBasket.Add(3, numberOfCopies: 2);
-        //    shoppingBasket.Add(4, numberOfCopies: 1);
-        //    shoppingBasket.Add(5, numberOfCopies: 1);
-        //    var price = shoppingBasket.Price();
-        //    Check.That(price).IsEqualTo(51.20);
-        //}
+        [Test]
+        public void Return_30_when_buy_52_different_book()
+        {
+            var shoppingBasket = new ShoppingBasket();
+            shoppingBasket.Add(1, numberOfCopies: 2);
+            shoppingBasket.Add(2, numberOfCopies: 2);
+            shoppingBasket.Add(3, numberOfCopies: 2);
+            shoppingBasket.Add(4, numberOfCopies: 1);
+            shoppingBasket.Add(5, numberOfCopies: 1);
+            var price = shoppingBasket.Price();
+            Check.That(price).IsEqualTo(51.20);
+        }
 
         [Test]
         public void Return_8_when_buy_a_book()
@@ -124,7 +124,7 @@
             _books.Add(bookId, numberOfCopies);
         }
 
-        public double Price()
+        public double Price2()
         {
             double price = 0;
             int index = 0;
@@ -141,6 +141,36 @@
                 index++;
             }
             return price;
+        }
+
+        public double Price()
+        {
+            var bookSets = new List<List<int>>{ new List<int>() };
+            foreach (var booksKey in _books.Keys)
+            {
+                for (int i = 0; i < _books[booksKey]; i++)
+                {
+                    bool isAdded = false;
+                    foreach (var bookSet in bookSets)
+                    {
+                        if (bookSet.Count == 4)
+                        {
+                            continue;
+                        }
+                        if (!bookSet.Contains(booksKey))
+                        {
+                            bookSet.Add(booksKey);
+                            isAdded = true;
+                            break;
+                        }
+                    }
+                    if (!isAdded)
+                    {
+                        bookSets.Add(new List<int>{ booksKey});
+                    }
+                }
+            }
+            return bookSets.Sum(x => x.Count * 8 * _discounts[x.Count]);
         }
 
         private double GetDiscount(int numberDiferentOfBook)
