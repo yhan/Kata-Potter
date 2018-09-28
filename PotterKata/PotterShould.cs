@@ -22,8 +22,8 @@
         public void Return_16_when_buy_2_different_book()
         {
             var shoppingBasket = new ShoppingBasket();
-            shoppingBasket.Add(1, numberOfCopies: 1);
-            shoppingBasket.Add(2, numberOfCopies: 1);
+            shoppingBasket.Add(1, 1);
+            shoppingBasket.Add(2, 1);
             var price = shoppingBasket.Price();
             Check.That(price).IsEqualTo(16 * 0.95);
         }
@@ -32,8 +32,8 @@
         public void Return_16_when_buy_2_same_book_and_a_different_book()
         {
             var shoppingBasket = new ShoppingBasket();
-            shoppingBasket.Add(1, numberOfCopies: 1);
-            shoppingBasket.Add(2, numberOfCopies: 2);
+            shoppingBasket.Add(1, 1);
+            shoppingBasket.Add(2, 2);
             var price = shoppingBasket.Price();
             Check.That(price).IsEqualTo(16 * 0.95 + 8);
         }
@@ -42,9 +42,9 @@
         public void Return_21_6_when_buy_3_different_book()
         {
             var shoppingBasket = new ShoppingBasket();
-            shoppingBasket.Add(1, numberOfCopies: 1);
-            shoppingBasket.Add(2, numberOfCopies: 1);
-            shoppingBasket.Add(3, numberOfCopies: 1);
+            shoppingBasket.Add(1, 1);
+            shoppingBasket.Add(2, 1);
+            shoppingBasket.Add(3, 1);
             var price = shoppingBasket.Price();
             Check.That(price).IsEqualTo(24 * 0.90);
         }
@@ -53,10 +53,10 @@
         public void Return_25_6_when_buy_4_different_book()
         {
             var shoppingBasket = new ShoppingBasket();
-            shoppingBasket.Add(1, numberOfCopies: 1);
-            shoppingBasket.Add(2, numberOfCopies: 1);
-            shoppingBasket.Add(3, numberOfCopies: 1);
-            shoppingBasket.Add(4, numberOfCopies: 1);
+            shoppingBasket.Add(1, 1);
+            shoppingBasket.Add(2, 1);
+            shoppingBasket.Add(3, 1);
+            shoppingBasket.Add(4, 1);
             var price = shoppingBasket.Price();
             Check.That(price).IsEqualTo(8 * 4 * 0.80);
         }
@@ -65,8 +65,8 @@
         public void Return_30_4_when_buy_2_book_1_and_2_book_2()
         {
             var shoppingBasket = new ShoppingBasket();
-            shoppingBasket.Add(1, numberOfCopies: 2);
-            shoppingBasket.Add(2, numberOfCopies: 2);
+            shoppingBasket.Add(1, 2);
+            shoppingBasket.Add(2, 2);
             var price = shoppingBasket.Price();
             Check.That(price).IsEqualTo(8 * 4 * 0.95);
         }
@@ -75,24 +75,24 @@
         public void Return_30_when_buy_5_different_book()
         {
             var shoppingBasket = new ShoppingBasket();
-            shoppingBasket.Add(1, numberOfCopies: 1);
-            shoppingBasket.Add(2, numberOfCopies: 1);
-            shoppingBasket.Add(3, numberOfCopies: 1);
-            shoppingBasket.Add(4, numberOfCopies: 1);
-            shoppingBasket.Add(5, numberOfCopies: 1);
+            shoppingBasket.Add(1, 1);
+            shoppingBasket.Add(2, 1);
+            shoppingBasket.Add(3, 1);
+            shoppingBasket.Add(4, 1);
+            shoppingBasket.Add(5, 1);
             var price = shoppingBasket.Price();
             Check.That(price).IsEqualTo(8 * 5 * 0.75);
         }
 
         [Test]
-        public void Return_30_when_buy_52_different_book()
+        public void Return_51_20_when_buy_52_different_book()
         {
             var shoppingBasket = new ShoppingBasket();
-            shoppingBasket.Add(1, numberOfCopies: 2);
-            shoppingBasket.Add(2, numberOfCopies: 2);
-            shoppingBasket.Add(3, numberOfCopies: 2);
-            shoppingBasket.Add(4, numberOfCopies: 1);
-            shoppingBasket.Add(5, numberOfCopies: 1);
+            shoppingBasket.Add(1, 2);
+            shoppingBasket.Add(2, 2);
+            shoppingBasket.Add(3, 2);
+            shoppingBasket.Add(4, 1);
+            shoppingBasket.Add(5, 1);
             var price = shoppingBasket.Price();
             Check.That(price).IsEqualTo(51.20);
         }
@@ -109,73 +109,106 @@
 
     internal class ShoppingBasket
     {
-        private readonly Dictionary<int, int> _books = new Dictionary<int, int>();
-        private readonly Dictionary<int, double> _discounts = new Dictionary<int, double>
-        {
-            [1] = 1,
-            [2] = 0.95,
-            [3] = 0.90,
-            [4] = 0.80,
-            [5] = 0.75
-        };
-
+        
+        private readonly List<int> _books = new List<int>();
+        
         public void Add(int bookId, int numberOfCopies)
         {
-            _books.Add(bookId, numberOfCopies);
-        }
-
-        public double Price2()
-        {
-            double price = 0;
-            int index = 0;
-            int numberOfSerieAlreadyPrice = 0;
-            foreach (var keyValuePair in _books.OrderBy(x => x.Value))
+            for (var i = 0; i < numberOfCopies; i++)
             {
-                var numberDiferentOfBook = _books.Count - index;
-                var numberOfSerie = keyValuePair.Value - numberOfSerieAlreadyPrice;
-                if (numberOfSerie > 0)
-                {
-                    price += numberOfSerie * numberDiferentOfBook * GetDiscount(numberDiferentOfBook) * 8;
-                    numberOfSerieAlreadyPrice = keyValuePair.Value;
-                }
-                index++;
+                _books.Add(bookId);
             }
-            return price;
         }
 
         public double Price()
         {
-            var bookSets = new List<List<int>>{ new List<int>() };
-            foreach (var booksKey in _books.Keys)
+            var bookSets = new List<BookSet>
+                               {
+                                  new BookSet()
+                               };
+            var pivot = CalculatePivot();
+
+            foreach (var bookId in _books)
             {
-                for (int i = 0; i < _books[booksKey]; i++)
-                {
-                    bool isAdded = false;
-                    foreach (var bookSet in bookSets)
-                    {
-                        if (bookSet.Count == 4)
-                        {
-                            continue;
-                        }
-                        if (!bookSet.Contains(booksKey))
-                        {
-                            bookSet.Add(booksKey);
-                            isAdded = true;
-                            break;
-                        }
-                    }
-                    if (!isAdded)
-                    {
-                        bookSets.Add(new List<int>{ booksKey});
-                    }
-                }
+                ConstructBookSets(bookSets, pivot, bookId);
             }
-            return bookSets.Sum(x => x.Count * 8 * _discounts[x.Count]);
+
+            return bookSets.Sum(x => x.GetPrice());
         }
 
-        private double GetDiscount(int numberDiferentOfBook)
+        private static void ConstructBookSets(List<BookSet> bookSets, int pivot, int bookId)
         {
-            return _discounts[numberDiferentOfBook];
+            var isAdded = false;
+            foreach (var bookSet in bookSets)
+            {
+                isAdded = bookSet.IsNotOptimizationPossible(pivot) && bookSet.DoesNotContain(bookId);
+                if (isAdded)
+                {
+                    bookSet.Add(bookId);
+                    break;
+                }
+            }
+
+            if (!isAdded)
+            {
+                bookSets.Add(new BookSet().Add(bookId));
+            }
+        }
+
+        private int CalculatePivot()
+        {
+            var count = _books.GroupBy(x => x).Select(x => x.Count()).Distinct().Count();
+            var pivot = count == 1 ? 5 : 4;
+            return pivot;
+        }
+    }
+
+
+    class BookSet
+    {
+
+        private const int _bookPrice = 8;
+
+        private readonly Dictionary<int, double> _discounts = new Dictionary<int, double>
+                                                                  {
+                                                                      [1] = 1,
+                                                                      [2] = 0.95,
+                                                                      [3] = 0.90,
+                                                                      [4] = 0.80,
+                                                                      [5] = 0.75
+                                                                  };
+
+        List<int> books = new List<int>();
+        
+        public BookSet()
+        {
+            
+        }
+
+        public int Count()
+        {
+            return books.Count;
+        }
+
+        public BookSet Add(int bookId)
+        {
+            books.Add(bookId);
+            return this;
+        }
+
+        public bool DoesNotContain(int bookId)
+        {
+            return !books.Contains(bookId);
+        }
+
+        public double GetPrice()
+        {
+            return this.Count() * _bookPrice * _discounts[this.Count()];
+        }
+
+        public bool IsNotOptimizationPossible( int pivot)
+        {
+            return this.books.Count < pivot;
         }
     }
 }
